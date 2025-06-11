@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtualizor API Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3, h4 {
+            color: #111;
+            line-height: 1.2;
+        }
+        h1 {
+            font-size: 2.5em;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        h2 {
+            font-size: 2em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            margin-top: 40px;
+        }
+        h3 {
+            font-size: 1.5em;
+            margin-top: 30px;
+        }
+        h4 {
+            font-size: 1.2em;
+            margin-top: 25px;
+        }
+        p, ul, li {
+            margin-bottom: 15px;
+        }
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            background-color: #eef;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+            font-size: 0.9em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        thead th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #555;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        strong {
+            color: #d9534f;
+        }
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        .get { background-color: #61affe; }
+        .post { background-color: #49cc90; }
+        .put { background-color: #fca130; }
+        .delete { background-color: #f93e3e; }
+        .endpoint {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Virtualizor API Documentation</h1>
+        <p>This document provides a detailed description of the Virtualizor API. This API allows for the management of virtual servers (VMs), including creation, retrieval, modification, and deletion, as well as other administrative tasks like managing operating systems, ISOs, and viewing server tasks.</p>
+
+        <h2>Authentication</h2>
+        <p>The API utilizes <strong>Basic Authentication</strong> to secure its endpoints. All requests must include an <code>Authorization</code> header containing the Base64 encoded username and password.</p>
+        <ul>
+            <li><strong>Username:</strong> <code>PUT_YOUR_API_KEY_HERE</code></li>
+            <li><strong>Password:</strong> <code>PUT_YOUR_API_PASSWORD_HERE</code></li>
+        </ul>
+        <p>An example of the <code>Authorization</code> header is provided in each request example.</p>
+
+        <h2>Base URL</h2>
+        <p>All API endpoints documented below are relative to the following base URL:</p>
+        <p><code>https://vzapi.galaxygate.net</code>.</p>
+
+        <hr>
+
+        <h2>Server Management</h2>
+        <p>This section details the endpoints for creating and managing virtual servers.</p>
+
+        <div id="list-servers">
+            <h3>List Servers</h3>
+            <p>Retrieves a list of all available servers.</p>
+            <p><span class="method get">GET</span> <span class="endpoint">/servers</span></p>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request GET 'https://vzapi.galaxygate.net/servers' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV='</code></pre>
+        </div>
+
+        <div id="create-vm">
+            <h3>Create VM</h3>
+            <p>Provisions a new virtual machine with specified resources.</p>
+            <p><span class="method post">POST</span> <span class="endpoint">/servers</span></p>
+            <h4>Request Body: <code>application/json</code></h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Type</th>
+                        <th>Required</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>password</code></td><td>string</td><td>Yes</td><td>The root password for the new VM.</td></tr>
+                    <tr><td><code>hostname</code></td><td>string</td><td>Yes</td><td>The hostname for the new VM.</td></tr>
+                    <tr><td><code>os</code></td><td>string</td><td>Yes</td><td>The ID of the operating system to install.</td></tr>
+<!--                     <tr><td><code>storage</code></td><td>integer</td><td>Yes</td><td>The disk storage size in Gigabytes (GB).</td></tr>
+                    <tr><td><code>memory</code></td><td>integer</td><td>Yes</td><td>The amount of RAM in Megabytes (MB).</td></tr>
+                    <tr><td><code>cores</code></td><td>integer</td><td>Yes</td><td>The number of CPU cores.</td></tr>
+                    <tr><td><code>ips_public</code></td><td>integer</td><td>Yes</td><td>The number of public IP addresses.</td></tr>
+                    <tr><td><code>ips_private</code></td><td>integer</td><td>Yes</td><td>The number of private IP addresses.</td></tr>
+                    <tr><td><code>download_speed</code></td><td>integer</td><td>Yes</td><td>The download speed limit in KB/s (0 for unlimited).</td></tr>
+                    <tr><td><code>upload_speed</code></td><td>integer</td><td>Yes</td><td>The upload speed limit in KB/s (0 for unlimited).</td></tr> -->
+                </tbody>
+            </table>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request POST 'https://vzapi.galaxygate.net/servers' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV=' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "password": "eb155f8f2Bcd4e4d8566265f7fd99f5e",
+    "hostname": "some-hostname",
+    "os": "1108",<!-- "storage": 50,
+    "memory": 1024,
+    "cores": 1,
+    "ips_public": 1,
+    "ips_private": 1,
+    "download_speed": 12800,
+    "upload_speed": 12800 -->
+}'</code></pre>
+        </div>
+
+        <div id="get-server">
+            <h3>Get Server Details</h3>
+            <p>Retrieves the complete details of a specific server by its ID.</p>
+            <p><span class="method get">GET</span> <span class="endpoint">/servers/{server_id}</span></p>
+            <h4>URL Parameters:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>server_id</code></td><td>integer</td><td><strong>Required</strong>. The unique ID of the server.</td></tr>
+                </tbody>
+            </table>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request GET 'https://vzapi.galaxygate.net/servers/10425' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV='</code></pre>
+        </div>
+<!-- 
+        <div id="edit-server">
+            <h3>Edit Server</h3>
+            <p>Modifies the configuration of an existing server.</p>
+            <p><span class="method put">PUT</span> <span class="endpoint">/servers/{server_id}</span></p>
+            <h4>URL Parameters:</h4>
+            <table>
+                 <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+                 <tbody><tr><td><code>server_id</code></td><td>integer</td><td><strong>Required</strong>. The unique ID of the server.</td></tr></tbody>
+            </table>
+            <h4>Request Body: <code>application/json</code> (All fields are optional)</h4>
+            <table>
+                <thead>
+                    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>password</code></td><td>string</td><td>The new root password for the VM.</td></tr>
+                    <tr><td><code>hostname</code></td><td>string</td><td>The new hostname for the VM.</td></tr>
+                    <tr><td><code>storage</code></td><td>integer</td><td>The new disk storage size in GB.</td></tr>
+                    <tr><td><code>memory</code></td><td>integer</td><td>The new amount of RAM in MB.</td></tr>
+                    <tr><td><code>cores</code></td><td>integer</td><td>The new number of CPU cores.</td></tr>
+                    <tr><td><code>ips_public</code></td><td>integer</td><td>The new number of public IP addresses.</td></tr>
+                    <tr><td><code>ips_private</code></td><td>integer</td><td>The new number of private IP addresses.</td></tr>
+                    <tr><td><code>download_speed</code></td><td>integer</td><td>The new download speed limit in KB/s.</td></tr>
+                    <tr><td><code>upload_speed</code></td><td>integer</td><td>The new upload speed limit in KB/s.</td></tr>
+                    <tr><td><code>iso</code></td><td>string</td><td>The ISO to mount.</td></tr>
+                </tbody>
+            </table>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request PUT 'https://vzapi.galaxygate.net/servers/10425' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV=' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "password": "",
+    "hostname": "new-hostname-222",
+    "storage": 50,
+    "memory": 1024,
+    "cores": 1,
+    "ips_public": 1,
+    "ips_private": 1,
+    "download_speed": 12800,
+    "upload_speed": 12800,
+    "iso": ""
+}'</code></pre>
+        </div> -->
+
+        <div id="delete-server">
+            <h3>Delete Server</h3>
+            <p>Permanently deletes a specific server. This action is irreversible.</p>
+            <p><span class="method delete">DELETE</span> <span class="endpoint">/servers/{server_id}</span></p>
+            <h4>URL Parameters:</h4>
+            <table>
+                <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody><tr><td><code>server_id</code></td><td>integer</td><td><strong>Required</strong>. The unique ID of the server.</td></tr></tbody>
+            </table>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request DELETE 'https://vzapi.galaxygate.net/servers/10427' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV='</code></pre>
+        </div>
+
+        <hr>
+
+        <h2>Server Actions</h2>
+        <p>This section covers specific actions that can be performed on a VM.</p>
+
+        <div id="power-action">
+            <h3>Power Action</h3>
+            <p>Performs a power action (e.g., shutdown, start, restart) on a server.</p>
+            <p><span class="method put">PUT</span> <span class="endpoint">/servers/{server_id}/power</span></p>
+            <h4>URL Parameters:</h4>
+            <table>
+                 <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+                 <tbody><tr><td><code>server_id</code></td><td>integer</td><td><strong>Required</strong>. The unique ID of the server.</td></tr></tbody>
+            </table>
+            <h4>Request Body: <code>application/json</code></h4>
+            <table>
+                <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody><tr><td><code>action</code></td><td>string</td><td><strong>Required</strong>. The power action. e.g., "SHUTDOWN", "POWER_ON", "RESTART", "POWER_OFF".</td></tr></tbody>
+            </table>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request PUT 'https://vzapi.galaxygate.net/servers/10426/power' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV=' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "action": "SHUTDOWN"
+}'</code></pre>
+        </div>
+
+        <div id="edit-password">
+            <h3>Edit VM Password</h3>
+            <p>Changes the root password for a specific VM.</p>
+            <p><span class="method put">PUT</span> <span class="endpoint">/servers/{server_id}/password</span></p>
+            <h4>URL Parameters:</h4>
+            <table>
+                 <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+                 <tbody><tr><td><code>server_id</code></td><td>integer</td><td><strong>Required</strong>. The unique ID of the server.</td></tr></tbody>
+            </table>
+            <h4>Request Body: <code>application/json</code></h4>
+            <table>
+                <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody><tr><td><code>password</code></td><td>string</td><td><strong>Required</strong>. The new password.</td></tr></tbody>
+            </table>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request PUT 'https://vzapi.galaxygate.net/servers/10425/password' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV=' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "password": "Test@123"
+}'</code></pre>
+        </div>
+
+        <div id="reinstall-os">
+            <h3>Reinstall VM OS</h3>
+            <p>Reinstalls the operating system on a specific VM from a template.</p>
+            <p><span class="method put">PUT</span> <span class="endpoint">/servers/{server_id}/os</span></p>
+            <h4>URL Parameters:</h4>
+            <table>
+                 <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+                 <tbody><tr><td><code>server_id</code></td><td>integer</td><td><strong>Required</strong>. The unique ID of the server.</td></tr></tbody>
+            </table>
+            <h4>Request Body: <code>application/json</code></h4>
+            <table>
+                <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td><code>password</code></td><td>string</td><td><strong>Required</strong>. The password for the reinstalled OS.</td></tr>
+                    <tr><td><code>os</code></td><td>string</td><td><strong>Required</strong>. The ID of the OS template to use.</td></tr>
+                </tbody>
+            </table>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request PUT 'https://vzapi.galaxygate.net/servers/10425/os' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV=' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "password": "Test@123",
+    "os": "1108"
+}'</code></pre>
+        </div>
+
+        <div id="edit-hostname">
+            <h3>Edit VM Hostname</h3>
+            <p>Changes the hostname for a specific VM.</p>
+            <p><span class="method put">PUT</span> <span class="endpoint">/servers/{server_id}/hostname</span></p>
+            <h4>URL Parameters:</h4>
+            <table>
+                 <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+                 <tbody><tr><td><code>server_id</code></td><td>integer</td><td><strong>Required</strong>. The unique ID of the server.</td></tr></tbody>
+            </table>
+            <h4>Request Body: <code>application/json</code></h4>
+            <table>
+                <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody><tr><td><code>hostname</code></td><td>string</td><td><strong>Required</strong>. The new hostname.</td></tr></tbody>
+            </table>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request PUT 'https://vzapi.galaxygate.net/servers/10425/hostname' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV=' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "hostname": "some-hostname2"
+}'</code></pre>
+        </div>
+
+        <hr>
+
+        <h2>Resources and Tasks</h2>
+        <p>This section covers endpoints for listing available resources and viewing task logs.</p>
+
+        <div id="list-os">
+            <h3>List OS</h3>
+            <p>Retrieves a list of available operating systems that can be used for installation.</p>
+            <p><span class="method get">GET</span> <span class="endpoint">/os</span></p>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request GET 'https://vzapi.galaxygate.net/os' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV='</code></pre>
+        </div>
+
+        <div id="list-isos">
+            <h3>List ISOs</h3>
+            <p>Retrieves a list of available ISO images that can be mounted to a VM.</p>
+            <p><span class="method get">GET</span> <span class="endpoint">/isos</span></p>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request GET 'https://vzapi.galaxygate.net/isos' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV='</code></pre>
+        </div>
+
+        <div id="list-tasks">
+            <h3>List All Tasks</h3>
+            <p>Retrieves a list of all tasks initiated across all servers.</p>
+            <p><span class="method get">GET</span> <span class="endpoint">/tasks</span></p>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request GET 'https://vzapi.galaxygate.net/tasks' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV='</code></pre>
+        </div>
+
+        <div id="list-vm-tasks">
+            <h3>List VM Tasks</h3>
+            <p>Retrieves a list of all tasks associated with a specific VM.</p>
+            <p><span class="method get">GET</span> <span class="endpoint">/servers/{server_id}/tasks</span></p>
+             <h4>URL Parameters:</h4>
+            <table>
+                 <thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+                 <tbody><tr><td><code>server_id</code></td><td>integer</td><td><strong>Required</strong>. The unique ID of the server.</td></tr></tbody>
+            </table>
+            <h4>Example Request:</h4>
+            <pre><code>curl --location --request GET 'https://vzapi.galaxygate.net/servers/10425/tasks' \
+--header 'Authorization: Basic ACDTYNQGRUUFSWCMBLRMJQPVQQCUAV='</code></pre>
+        </div>
+    </div>
+
+</body>
+</html>
